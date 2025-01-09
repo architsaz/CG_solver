@@ -1,0 +1,15 @@
+Directory Struct - 1/9/2025
+
+project/
+├── include/            # Header files
+│   ├── common.h        # Common macros and utilities
+│   ├── types.h         # Shared data structures and typedefs
+│   ├── others.h        # Function prototypes
+├── src/                # Source files
+│   ├── main.c          # Implementation of main file 
+│   ├── io_utils.c      # Implementation of function used in these project
+├── lib/                # Test Static library files (*.a) created for archive this project and resued for future projects ( creat by object files )
+│   ├── libmylib.a
+├── tests/              # Test files
+|-- bin/                # Directory for saving the object files and executive file
+├── Makefile            # Build script ()
