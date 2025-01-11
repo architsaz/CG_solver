@@ -1,14 +1,17 @@
 # Compiler and flags
 CC = gcc
-CFLAGS = -Wall -Wextra -Wshadow -Wconversion -pedantic -std=c11 -g -fsanitize=address -DDEBUG -Iinclude
-LDFLAGS = -L$(LIB_DIR) -lmylib  # Linker flags to specify libraries
+# CFLAGS = -Wall -Wextra -Wshadow -Wconversion -pedantic -std=c11 -g -fsanitize=address -DDEBUG -Iinclude  
+# CFLAGS = -Wall -Wextra -Wshadow -Wconversion -pedantic -std=c11 -g -fsanitize=address -Iinclude
+ CFLAGS = -O2 -Wall -Wextra -fstack-protector-strong -D_FORTIFY_SOURCE=2 -Iinclude 
+# LIB_DIR = 
+# LDFLAGS = -L$(LIB_DIR) -lmylib  # Linker flags to specify libraries
 
 # Directories
 SRC_DIR = src
 BIN_DIR = bin
 
 # Target executable
-TARGET = $(BIN_DIR)/test_app
+TARGET = $(BIN_DIR)/EXEC_CG
 
 # Source and object files
 SRCS = $(wildcard $(SRC_DIR)/*.c)
@@ -20,7 +23,7 @@ all: $(TARGET)
 # Linking step
 $(TARGET): $(OBJS)
 	@mkdir -p $(BIN_DIR)
-	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
+	$(CC) $(CFLAGS) $^ -o $@ -lm 
 
 # Compilation step for each .c file
 $(BIN_DIR)/%.o: $(SRC_DIR)/%.c
