@@ -117,7 +117,7 @@ int main()
     double *u = (double *)calloc((size_t)nelem,sizeof(double));
 
     // Solve using CG
-    SolverConfig config = {100000,1e-8};
+    SolverConfig config = {100000,1e-8,true};
     solver_set_config(config); 
     //precond_conjugate_gradient(&A, RHS, u);
     conjugate_gradient(&A, RHS, u);

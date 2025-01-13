@@ -2,9 +2,11 @@
 #include <stdlib.h>
 #include <math.h>
 #include "types.h"
+#include "RTgnuplot.h"
+#include <stdbool.h>
 
 // Default configuration
-static SolverConfig solver_config = {1000, 1e-9}; // Default: 1000 iterations, residual 1e-9
+static SolverConfig solver_config = {1000, 1e-9, false}; // Default: 1000 iterations, residual 1e-9
 // Set configuration
 void solver_set_config(SolverConfig new_config) {
     solver_config = new_config;
@@ -134,7 +136,16 @@ void conjugate_gradient(CSRMatrix *A, double *b, double *u)
     double *r = malloc((size_t)n * sizeof(double));
     double *p = malloc((size_t)n * sizeof(double));
     double *Ap = malloc((size_t)n * sizeof(double));
-
+    // Initialize function pointers
+    FILE *gnuplot = NULL;
+    void (*update_plot)(FILE *, int, double) = noop_update;
+    void (*finalize_plot)(FILE *) = noop_finalize;
+    if(solver_config.showplot){
+        // Initialize Gnuplot
+        gnuplot = initialize_gnuplot();
+        update_plot = update_gnuplot;
+        finalize_plot = finalize_gnuplot;
+    }
     // Initialize
     csr_matvec(A, u, r); // r = Au
     for (int i = 0; i < n; i++)
@@ -168,7 +179,8 @@ void conjugate_gradient(CSRMatrix *A, double *b, double *u)
             printf("* CG solver converged in %d iterations.\n", k + 1);
             break;
         }
-
+        // Update Gnuplot with the current iteration and residual
+        update_plot(gnuplot, k, rs_new);
         double beta = rs_new / rs_old;
         for (int i = 0; i < n; i++)
             p[i] = r[i] + beta * p[i];
@@ -176,7 +188,8 @@ void conjugate_gradient(CSRMatrix *A, double *b, double *u)
     }
     if (k == solver_config.max_iteration)
         printf("! CG solver reach to the max of iteration (%d).\n", solver_config.max_iteration);
-
+    // Finalize plotting
+    finalize_plot(gnuplot);
     free(r);
     free(p);
     free(Ap);
