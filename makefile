@@ -2,7 +2,8 @@
 CC = gcc
 # CFLAGS = -Wall -Wextra -Wshadow -Wconversion -pedantic -std=c11 -g -fsanitize=address -DDEBUG -Iinclude  
 # CFLAGS = -Wall -Wextra -Wshadow -Wconversion -pedantic -std=c99 -D_POSIX_C_SOURCE=200809L  -g -fsanitize=address -Iinclude
- CFLAGS = -O2 -Wall -Wextra -fstack-protector-strong -D_FORTIFY_SOURCE=2 -Iinclude 
+# CFLAGS = -pg -Iinclude # the run program to generate the gmon.out and open it with command gprof program gmon.out > report.txt
+ CFLAGS = -O3 -march=native -ftree-vectorize -fopt-info-vec -Wall -Wextra -fstack-protector-strong -D_FORTIFY_SOURCE=2 -Iinclude 
 # LIB_DIR = 
 LDFLAGS = -lm  
 # LDFLAGS = -L$(LIB_DIR) -lmylib  # Linker flags to specify libraries
