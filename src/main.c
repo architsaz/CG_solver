@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include "CGSolver.h"
 
 void generate_esure(int grid_width, int grid_height, int *esure) {
@@ -24,6 +25,9 @@ void generate_esure(int grid_width, int grid_height, int *esure) {
 
 int main()
 {
+    // clock 
+    clock_t start_time, end_time;
+    double cpu_time_used;
     // mesh
     int grid_width = 1000;
     int grid_height = 1000;
@@ -120,7 +124,11 @@ int main()
     SolverConfig config = {100000,1e-8,true};
     solver_set_config(config); 
     //precond_conjugate_gradient(&A, RHS, u);
+    start_time = clock();
     conjugate_gradient(&A, RHS, u);
+    end_time = clock();
+    cpu_time_used = (double)(end_time-start_time)/CLOCKS_PER_SEC;
+    printf("! CG Solver execution time : %.2f seconds\n",cpu_time_used);
     //   Output solution
     // printf("Solution u:\n");
     // for (int i = 0; i < grid_height; i++){
