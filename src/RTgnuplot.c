@@ -10,6 +10,8 @@ FILE* initialize_gnuplot(void) {
     }
 
     // Gnuplot configuration
+    fprintf(gnuplot, "set terminal pngcairo\n");
+    fprintf(gnuplot, "set output 'residual_plot.png'\n");
     fprintf(gnuplot, "set title 'Residual vs. Iteration'\n");
     fprintf(gnuplot, "set xlabel 'Iteration'\n");
     fprintf(gnuplot, "set ylabel 'Residual'\n");
