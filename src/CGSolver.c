@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <stdbool.h>
 #include "types.h"
 #include "RTgnuplot.h"
-#include <stdbool.h>
+#include "CRSmatfuncs.h"
 
 // Default configuration
 static SolverConfig solver_config = {1000, 1e-9, false}; // Default: 1000 iterations, residual 1e-9
@@ -11,36 +12,8 @@ static SolverConfig solver_config = {1000, 1e-9, false}; // Default: 1000 iterat
 void solver_set_config(SolverConfig new_config) {
     solver_config = new_config;
 }
-// Function to count non-zero elements in the matrix
-int countNonZero(int rows, int cols, double *matrix) {
-    int count = 0;
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++) {
-            if (fabs(matrix[cols * i + j]) > 1e-8) {  // Use cols here
-                count++;
-            }
-        }
-    }
-    return count;
-}
-// conver sparse Matrix to CRS format 
-void convertToCRS(int rows, int cols, double *matrix, double *val, int *col_ind, int *row_ptr) {
-    int k = 0;  // Index for `val` and `col_ind`
-    row_ptr[0] = 0;  // First row starts at index 0
-
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++) {
-            if (fabs(matrix[cols * i + j]) > solver_config.residual_limit) {
-                val[k] = matrix[cols * i + j];  // Store non-zero value
-                col_ind[k] = j;                  // Store column index
-                k++;
-            }
-        }
-        row_ptr[i + 1] = k;  // Update row pointer to the total count of non-zero elements so far
-    }
-}
 // Define a preconditioner application function:
-void apply_preconditioner(CSRMatrix *A, double *r, double *z)
+void apply_preconditioner(CRSMatrix *A, double *r, double *z)
 {
     // Jacobi Preconditioner
     for (int i = 0; i < A->n; i++) {
@@ -59,20 +32,8 @@ void apply_preconditioner(CSRMatrix *A, double *r, double *z)
         z[i] = r[i] / diag; // Apply diagonal scaling
     }
 }
-// Matrix-Vector Multiplication
-void csr_matvec(CSRMatrix *A, double *x, double *y)
-{
-    for (int i = 0; i < A->n; i++)
-    {
-        y[i] = 0.0;
-        for (int j = A->row_ptr[i]; j < A->row_ptr[i + 1]; j++)
-        {
-            y[i] += A->values[j] * x[A->col_index[j]];
-        }
-    }
-}
 // Conjugate Gradient Solver with preconditioner
-void precond_conjugate_gradient(CSRMatrix *A, double *b, double *u)
+void precond_conjugate_gradient(CRSMatrix *A, double *b, double *u)
 {
     int n = A->n;
     double *r = malloc((size_t)n * sizeof(double));
@@ -130,7 +91,7 @@ void precond_conjugate_gradient(CSRMatrix *A, double *b, double *u)
     free(z);
 }
 // Conjugate Gradient Solver
-void conjugate_gradient(CSRMatrix *A, double *b, double *u)
+void conjugate_gradient(CRSMatrix *A, double *b, double *u)
 {
     int n = A->n;
     double *r = malloc((size_t)n * sizeof(double));

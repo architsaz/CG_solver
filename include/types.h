@@ -16,7 +16,7 @@ typedef struct
     double *values;
     int n;   // Number of rows (or columns for square matrix)
     int nnz; // Number of non-zero values
-} CSRMatrix;
+} CRSMatrix;
 
 
 #endif
