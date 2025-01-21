@@ -2,7 +2,8 @@
 #include <stdlib.h>
 #include <math.h>
 #include <stdbool.h>
-#include "types.h"
+#include "CRSMat_types.h"
+#include "CGSolver_types.h"
 #include "RTgnuplot.h"
 #include "CRSmatfuncs.h"
 

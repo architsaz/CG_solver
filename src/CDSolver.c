@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "types.h"
+#include "CRSMat_types.h"
 #include "CRSmatfuncs.h"
 
 // Function to solve Ax = b using Cholesky decomposition

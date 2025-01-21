@@ -1,12 +1,5 @@
-#ifndef TYPE_H
-#define TYPE_H
-#include <stdbool.h>
- 
-typedef struct {
-	int max_iteration;
-	double residual_limit;
-    bool showplot;
-}SolverConfig;
+#ifndef CRSMAT_TYPE_H
+#define CRSMAT_TYPE_H
 
 // Sparse Matrix in CSR Format
 typedef struct
